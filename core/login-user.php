@@ -57,9 +57,15 @@ function handle_signed_message($address, $signedMessage, $nonceFromClient) {
             $proxyApiKey = hash('sha256', $address . time());
             update_user_meta($current_user->ID, 'fungate_api_key', $proxyApiKey);
 
-            $lrc_account = get_loopring_account(get_user_meta($current_user->ID, 'ethereum_address', true));
-            update_user_meta($current_user->ID,'lrc_account', $lrc_account);
-            update_user_meta($current_user->ID,'nfts', get_nfts($lrc_account));
+            if(get_option("loopring_enabled")){
+                $lrc_account = get_loopring_account(get_user_meta($current_user->ID, 'ethereum_address', true));
+                update_user_meta($current_user->ID,'lrc_account', $lrc_account);
+                update_user_meta($current_user->ID,'nfts', get_nfts($lrc_account));
+            }
+            if(get_option("eth_enabled")){
+                include("pro/ethereum_integration.php");
+                update_user_meta($current_user->ID,'eth_nfts', get_eth_nfts($address));
+            }
         } else {
             // If the user is not logged in, proceed with login or account creation
             $user_id = username_exists($address);

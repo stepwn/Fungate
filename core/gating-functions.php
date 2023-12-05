@@ -10,7 +10,16 @@ function has_membership($selected_account, $attributes) {
             return false;
         }
         $nfts = get_user_meta( get_current_user_id(), 'nfts', true );
+        $eth_nfts = get_user_meta( get_current_user_id(), 'eth_nfts', true );
         if($nfts){
+            foreach ($nfts as $nft) {
+                $nft_conditions = check_conditions($nft, $attributes);
+                if ($nft_conditions) {
+                    $user_has[] = $nft;
+                }
+            }
+        }
+        if($eth_nfts){
             foreach ($nfts as $nft) {
                 $nft_conditions = check_conditions($nft, $attributes);
                 if ($nft_conditions) {

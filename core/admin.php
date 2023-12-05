@@ -160,7 +160,7 @@ function fungate_menu_page(){
         <ul>
             <li><a href="https://github.com/stepwn/Fungate" target="_blank">GitHub Repository</a></li>
             <li><a href="https://discord.gg/GYTEp72SdD" target="_blank">Discord Community</a></li>
-            <li><a href="https://fungate.dev" target="_blank">Looppress.dev Website</a></li>
+            <li><a href="https://fungate.dev" target="_blank">fungate.dev Website</a></li>
         </ul>
         
         <h2>Plugin Pages</h2>
@@ -234,7 +234,7 @@ function fungate_menu_page(){
     <?php
 }
 
-// Looppress Settings
+// fungate Settings
 add_action('admin_init', 'fungate_settings_init');
 function fungate_settings_init() {
     register_setting('fungate_settings', 'loopring_api_key');
@@ -299,7 +299,7 @@ if ( !extension_loaded('gmp') ) {
             <h2>General Settings</h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="fungate_license">Looppress License</label></th>
+                    <th scope="row"><label for="fungate_license">fungate License</label></th>
                     <td><input type="text" id="fungate_license" name="fungate_license" value="<?php echo esc_attr(get_option('fungate_license')); ?>" /></td>
                     <td>If you can't install php-gmp on your server, we can handle signature verification. Pro licenses come with personalized support. <a href="#">Learn More</a></td>
                 </tr>
