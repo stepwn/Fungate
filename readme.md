@@ -1,14 +1,14 @@
 Contributors: Stephen@swantech.us
 
-Tags: nft, authentication, content protection
+Tags: nft, authentication, content protection, web3 login, dApp
 
 Requires at least: 5.0
 
-Tested up to: 6.2
+Tested up to: 6.4.2
 
 Stable tag: 1.0.4
 
-PHP: 7.4
+PHP: 8.2
 
 License: GPL-3.0
 
