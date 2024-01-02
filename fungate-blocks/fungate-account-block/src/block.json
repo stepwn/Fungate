@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/fungate-account-block",
+	"version": "0.1.0",
+	"title": "Fungate Account Block",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Displays the Web3 Wallet Button",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "fungate-account-block",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

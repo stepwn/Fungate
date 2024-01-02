@@ -1,0 +1,322 @@
+<body>
+    <style>
+        body {
+    background-color: #f8f8f8;
+}
+
+#shortcodeForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: auto;
+}
+.dateTimeGroup {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dateTimeGroup label,
+        .dateTimeGroup input {
+            margin-bottom: 0;
+        }
+
+        textarea {
+            width: 100%;
+            /* ... Other styles ... */
+        }
+
+.dateGroup {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="date"],
+textarea {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button,
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#generatedShortcode {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: auto;
+}
+.removeDate {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.removeDate:hover {
+    background-color: #d32f2f;
+}
+.gatedefaultLogic{
+    display:none;
+}
+
+
+        </style>
+    <form id="shortcodeForm">
+        <div class="gatedefaultLogic">
+            <label>Default logic</label>
+            <label><input type="radio" name="defaultLogic[]" value="allowAnyone" class="defaultLogicRadio" checked> Allow anyone</label>
+            <label><input type="radio" name="defaultLogic[]" value="allowNobody" class="defaultLogicRadio"> Allow nobody</label>
+        </div>
+        <div id="dateContainer">
+            <div class="dateGroup">
+                <div class="dateTimeGroup">
+                    <label>Starting From: </label>
+                    <input type="date" name="dates[]" value="" class="dateInput">
+                    <input type="time" name="times[]" value="" class="timeInput">
+                </div>
+                <!-- <div class="dateTimeGroup">
+                    <label>End Date: </label>
+                    <input type="date" name="endDates[]" value="" class="endDateInput">
+                    <input type="time" name="endTimes[]" value="" class="endTimeInput">
+                </div> -->
+                <label>Minter: </label>
+                <textarea name="minter[]" value=""></textarea>
+                <label>NFT: </label>
+                <textarea name="nft[]" value=""></textarea>
+                <label>Contract: </label>
+                <textarea name="contract[]" value=""></textarea>
+                <p class="warningMessage" style="color: red;"></p>
+            </div>
+        </div>
+        <button type="button" id="addDate">Add Rule Change</button>
+        <hr>
+        <div id="generatedShortcode"></div>
+        <button id="saveButton"><i class="fas fa-save"></i> Save</button>
+    </form>
+
+<script>
+   $(document).ready(function() {
+    // Listen for the message event
+    window.addEventListener('message', function(event) {
+    if (typeof event.data === 'string' && event.data.startsWith('[fungate schedule=')) {
+        var shortcodeData = event.data.match(/\[fungate schedule='(.*?)'\]/)[1];
+        var parsedData = JSON.parse(shortcodeData);
+        var dateGrouptemp = $('.dateGroup:first').clone();
+        $('#dateContainer').empty();
+        $('#generatedShortcode').text('');
+        var previousDateTime = null;
+        var isFirstSection = true;
+        for (var dateTime in parsedData) {
+            var rule = parsedData[dateTime];
+
+            // Check for "fail" minter
+            if (rule.minter === "fail") {
+                $('input[name="defaultLogic[]"][value="allowNobody"]').prop('checked', true);
+                continue;
+            }
+
+            // Check for blank fields in the first section
+            if (isFirstSection && !rule.minter && !rule.nft && !rule.contract) {
+                if (Object.keys(parsedData).length === 1) {
+                    // If it's the only section, add it
+                    addSection(dateGrouptemp, dateTime, rule, previousDateTime);
+                } else {
+                    $('input[name="defaultLogic[]"][value="allowAnyone"]').prop('checked', true);
+                }
+                isFirstSection = false;
+                continue;
+            }
+
+            // Add the section
+            addSection(dateGrouptemp, dateTime, rule, previousDateTime);
+            previousDateTime = dateTime;
+            isFirstSection = false;
+        }
+        $('#generatedShortcode').text(event.data);
+    }
+});
+
+function addSection(template, dateTime, rule, previousDateTime) {
+    var dateGroup = template.clone();
+    dateGroup.find('.dateInput').val(previousDateTime ? previousDateTime.split(' ')[0] : dateTime.split(' ')[0]);
+    dateGroup.find('.timeInput').val(previousDateTime ? previousDateTime.split(' ')[1] : dateTime.split(' ')[1]);
+    //dateGroup.find('.endDateInput').val(dateTime.split(' ')[0]);
+    //dateGroup.find('.endTimeInput').val(dateTime.split(' ')[1]);
+    dateGroup.find('textarea[name="minter[]"]').val(rule.minter);
+    dateGroup.find('textarea[name="nft[]"]').val(rule.nft);
+    dateGroup.find('textarea[name="contract[]"]').val(rule.contract);
+    $('#dateContainer').append(dateGroup);
+}
+
+
+
+
+    // Set default values
+    $('.dateInput').val(new Date().toISOString().slice(0, 10));
+    $('.timeInput').val('00:00');
+    checkLogicFields();
+    function checkLogicFields() {
+        $('.dateGroup').each(function() {
+            var minter = $(this).find('textarea[name="minter[]"]').val();
+            var nft = $(this).find('textarea[name="nft[]"]').val();
+            var contract = $(this).find('textarea[name="contract[]"]').val();
+            var date = $(this).find('.dateInput').val();
+
+            if (!minter && !nft && !contract) {
+                $(this).find('.warningMessage').html('Leaving all logic fields blank will unlock the gated content for all users on <br>' + date + '.');
+            } else {
+                $(this).find('.warningMessage').html('');
+            }
+        });
+    }
+
+    // Check logic fields on input change
+    $('#dateContainer').on('input', '.dateGroup textarea, .dateGroup input', function() {
+        checkLogicFields();
+    });
+   
+
+    $('#addDate').click(function() {
+        var newDateGroup = $('.dateGroup:first').clone();
+        newDateGroup.find('.dateInput, .endDateInput').val(new Date().toISOString().slice(0, 10));
+        newDateGroup.find('.timeInput, .endTimeInput').val('00:00');
+        newDateGroup.find('textarea').val('');
+        newDateGroup.append('<br><button type="button" class="removeDate">Remove Rule Change</button>');
+        $('#dateContainer').append(newDateGroup);
+        checkLogicFields();
+    });
+
+    $('#dateContainer').on('click', '.removeDate', function() {
+        $(this).closest('.dateGroup').remove();
+    });
+    /* function isOverlapping(newStartDate, newEndDate, currentGroup) {
+    var isOverlapping = false;
+    $('.dateGroup').not(currentGroup).each(function() {
+        var startDate = new Date($(this).find('.dateInput').val());
+        var endDateInput = $(this).find('.endDateInput');
+        var endDate = endDateInput.val() ? new Date(endDateInput.val()) : new Date('2099-12-31'); // if no end date is set, use a far future date
+        
+        if ((newStartDate >= startDate && newStartDate <= endDate) || 
+            (newEndDate >= startDate && newEndDate <= endDate) ||
+            (newStartDate <= startDate && newEndDate >= endDate)) {
+            isOverlapping = true;
+            $(this).find('.dateInput').css("border", "2px solid red");
+            endDateInput.css("border", "2px solid red");
+            return false; // breaks the .each() loop
+        }
+        else{
+            $(this).find('.dateInput').css("border", "");
+            endDateInput.css("border", "");
+        }
+    });
+    return isOverlapping;
+} */
+
+
+    $('#shortcodeForm').submit(function(e) {
+    e.preventDefault();
+    
+    var isValid = true;
+
+    $('.dateGroup').each(function() {
+        var startDate = new Date($(this).find('.dateInput').val());
+        var endDateInput = $(this).find('.endDateInput');
+        var endDate = endDateInput.val() ? new Date(endDateInput.val()) : new Date('2099-12-31');
+        var currentGroup = $(this).closest('.dateGroup');
+        /* if (isOverlapping(startDate, endDate,currentGroup)) {
+            alert('One or more date ranges overlap. Please adjust the date ranges and try again.');
+            isValid = false;
+            return false; // breaks the .each() loop
+        } */
+    });
+    
+    if (isValid) {
+        generateAndSendShortcode();
+    }
+});
+
+    function generateAndSendShortcode(send=true) {
+        var shortcodeData = {};
+        var allowNobodyChecked = $(document).find('input[name="defaultLogic[]"]:checked').val() === 'allowNobody';
+
+            
+        if(allowNobodyChecked) {
+            // If "allow nobody" is checked, set minter to "fail"
+            minter = "fail";
+            
+            // Add a rule starting from yesterday with "fail" as the minter
+            var yesterday = new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().slice(0, 10);
+            shortcodeData[yesterday + ' 00:00'] = {
+                'minter': 'fail',
+                'nft': '',
+                'contract': ''
+            };
+        }
+        $('.dateGroup').each(function() {
+            var date = $(this).find('.dateInput').val();
+            var time = $(this).find('.timeInput').val();
+            var dateTime = date + ' ' + time;
+            //var endDate = $(this).find('.endDateInput').val();
+            //var endTime = $(this).find('.endTimeInput').val();
+            //var endDateTime = endDate + ' ' + endTime;
+            var minter = $(this).find('textarea[name="minter[]"]').val();
+            var nft = $(this).find('textarea[name="nft[]"]').val();
+            var contract = $(this).find('textarea[name="contract[]"]').val();
+            
+
+            shortcodeData[dateTime] = {
+                'minter': minter,
+                'nft': nft,
+                'contract': contract
+            };
+
+            // If end date is set, add an empty ruleset for it
+            /* if(endDate) {
+                shortcodeData[endDateTime] = {
+                    'minter': allowNobodyChecked ? 'fail' : '',
+                    'nft': '',
+                    'contract': ''
+                };
+            } */
+        });
+        
+        var shortcode = '[fungate schedule=\'' + JSON.stringify(shortcodeData) + '\']';
+        
+        if(send){
+            window.parent.postMessage(shortcode, '*');
+
+        }
+    }
+        
+        $('#saveButton').click(function() {
+            $('#shortcodeForm').submit();
+        });
+    });
+    </script>
+</body>

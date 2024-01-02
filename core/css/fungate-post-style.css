@@ -1,0 +1,66 @@
+.fungate-stacked-layout {
+    text-align: center;
+    margin:auto;
+    padding: 20px;
+    width: 100%;
+}
+.fungate-wrapper {
+    display: flex;
+    justify-content: center; /* Center the columns horizontally */
+    width: 100%;
+}
+.fungate-two-column-layout {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    max-width: 100%; /* Set a maximum width for the columns */
+    margin: auto; /* Center the columns within the wrapper */
+    padding: 20px; /* Add padding on either side */
+}
+
+.fungate-left-column,
+.fungate-right-column {
+    flex: 0 0 calc(50% - 10px); /* Each column takes up 50% width with spacing */
+    text-align: center;
+}
+
+.fungate-spacing-element {
+    flex: 0 0 20px; /* Adjust this value to control spacing width */
+}
+
+.fungate-right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    /* Optional styling for better appearance */
+    img {
+        height: auto;
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    @media (max-width: 768px) {
+        .fungate-two-column-layout {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fungate-left-column {
+            flex: 1;
+            margin-right: 0;
+            margin-bottom: 20px;
+        }
+        .fungate-wrapper{
+            width:100%;
+        }
+        .fungate-stacked-layout{
+            width:100%;
+        }
+        img{
+            max-width:100%;
+            height:auto;
+        }
+    }

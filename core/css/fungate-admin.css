@@ -1,0 +1,118 @@
+.toplevel_page_fungate .wp-menu-image img { 
+    width: 24px;
+}
+
+.fungate-role-inputs {
+    display: none;
+}
+
+.fungate-wrap {
+    width: 75%;
+    margin: auto;
+    margin-top: 2.5%;
+    box-shadow: 0px 4px 8px 0px rgba(128, 0, 128, 0.6); /* Purple box shadow */
+    padding: 16px;
+    background-color: #f3e9f7; /* Light purple background */
+    border-radius: 5px;
+}
+
+.fungate-wrap h1, .fungate-wrap h2, .fungate-wrap h3 {
+    color: #5d1451; /* Darker purple text */
+}
+
+/* Modern table styles */
+.fungate-wrap .form-table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.fungate-wrap .form-table th, .fungate-wrap .form-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.fungate-wrap .form-table th {
+    background-color: #8a2be2; /* Purple header background */
+    color: white;
+    font-weight: bold;
+    border-bottom: 2px solid #6c1b9b;
+}
+
+.fungate-wrap .form-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Input and select styles */
+.fungate-wrap input[type="text"], .fungate-wrap input[type="password"], .fungate-wrap select {
+    width: 100%; /* Full width */
+    border: 1px solid #8a2be2; /* Purple border */
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box; /* Box-sizing */
+}
+
+.fungate-wrap input[type="checkbox"] {
+    accent-color: #8a2be2; /* Purple checkbox */
+}
+
+/* Button styles */
+.fungate-plugin-buttons button, .fungate-plugin-buttons input[type="submit"] {
+    background-color: #8a2be2; /* Purple button background */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.fungate-plugin-buttons button:hover, .fungate-plugin-buttons input[type="submit"]:hover {
+    background-color: #5d1451; /* Darker purple on hover */
+}
+
+/* Shortcode info styles */
+.fungate-shortcode-info {
+    margin-top: 30px;
+    border: 1px solid #8a2be2; /* Purple border */
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.fungate-shortcode-example {
+    margin-top: 15px;
+    border-top: 1px dashed #8a2be2; /* Dashed purple border */
+    padding-top: 15px;
+}
+
+.fungate-help-header {
+    background-color: #f3e9f7; /* Light purple background */
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px 0px rgba(128, 0, 128, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fungate-help-header h2 {
+    margin: 0;
+    color: #5d1451; /* Darker purple text */
+}
+
+.fungate-help-link {
+    background-color: #8a2be2; /* Purple button background */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.fungate-help-link:hover {
+    background-color: #5d1451; /* Darker purple on hover */
+}

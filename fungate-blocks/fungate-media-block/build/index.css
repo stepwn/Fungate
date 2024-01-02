@@ -1,0 +1,105 @@
+/*!****************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************/
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.wp-block-create-block-fungate-media-block {
+  border: 1px dotted #f00;
+}
+
+.wp-block-create-block-fungate-media-block {
+  background-color: #9c1e9c;
+  padding: 2px;
+}
+
+/* General styles for the block */
+.wp-block-create-block-fungate-media-block {
+  border: 2px solid #ccc;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+/* Style for the file input */
+#fungate-media-Input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+/* Styles for text inputs within the inspector controls */
+.wp-block-create-block-fungate-media-block .components-text-control__input {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Style for buttons */
+.wp-block-create-block-fungate-media-block .components-button {
+  background-color: #0068b7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+.wp-block-create-block-fungate-media-block .components-button:hover {
+  background-color: #004b84;
+}
+
+/* Style for panel rows */
+.wp-block-create-block-fungate-media-block .components-panel__row {
+  border-bottom: 1px solid #eee;
+  padding: 16px 0;
+}
+
+/* Style for labels */
+.wp-block-create-block-fungate-media-block .components-base-control__label {
+  font-weight: bold;
+}
+
+/* Style for the selected file display */
+.wp-block-create-block-fungate-media-block p {
+  background-color: #0068b7;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Style for select input */
+.wp-block-create-block-fungate-media-block select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+/* Modal specific styles */
+.wp-block-create-block-fungate-media-block .components-modal__content {
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for remove button */
+.fungate-removeDate {
+  background-color: #dc3232;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.fungate-removeDate:hover {
+  background-color: #bb2020;
+}
+
+/*# sourceMappingURL=index.css.map*/

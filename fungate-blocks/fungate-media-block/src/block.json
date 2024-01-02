@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "create-block/fungate-media-block",
+	"version": "0.1.0",
+	"title": "Fungate Media Block",
+	"category": "widgets",
+	"icon": "smiley",
+	"description": "Fungate Protected Media Block",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"src": {
+			"type": "string",
+			"default": ""
+		},
+		"contract": {
+			"type": "string",
+			"default": ""
+		},
+		"minter": {
+			"type": "string",
+			"default": ""
+		},
+		"nft": {
+			"type": "string",
+			"default": ""
+		},
+		"schedule": {
+			"type": "string",
+			"default": ""
+		},
+		"showDownloadButton": {
+			"type": "boolean",
+			"default": false
+		},
+		"generatedShortcode": {
+			"type": "string",
+			"default": ""
+		}
+	},	
+	"textdomain": "fungate-media-block",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

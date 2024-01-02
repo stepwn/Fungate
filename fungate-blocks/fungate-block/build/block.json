@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "create-block/fungate-block",
+  "version": "0.1.0",
+  "title": "Fungate Block",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "Token Gate Content with Fungate!",
+  "example": {},
+  "attributes": {
+    "chain": {
+      "type": "string",
+      "default": "ethereum"
+    },
+    "minter": {
+      "type": "string",
+      "default": ""
+    },
+    "contract": {
+      "type": "string",
+      "default": ""
+    },
+    "nft": {
+      "type": "string",
+      "default": ""
+    },
+    "schedule": {
+      "type": "string",
+      "default": ""
+    },
+    "generatedShortcode": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "__experimentalSelector": ".wp-block-create-block-fungate-block",
+    "__experimentalFeatures": {
+      "typography": {
+        "fontSize": true,
+        "lineHeight": true
+      }
+    },
+    "align": true,
+    "__experimentalParent": [
+      "core/post-content"
+    ],
+    "__experimentalChildBlocks": [
+      "core/paragraph",
+      "core/image",
+      "core/heading"
+    ],
+    "__experimentalLayout": {
+      "contentSize": true,
+      "wideSize": true
+    }
+  },
+  "textdomain": "fungate-block",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}

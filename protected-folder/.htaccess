@@ -1,0 +1,3 @@
+# Deny all access from outside
+Order deny,allow
+Deny from all
