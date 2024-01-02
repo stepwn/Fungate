@@ -74,6 +74,7 @@ function Edit({
     setAttributes({
       generatedShortcode: shortcode
     });
+    console.log("Updated Attribute: ", attributes.generatedShortcode);
   };
 
   // Update the shortcode whenever relevant attributes change
@@ -428,9 +429,20 @@ function save({
   const {
     generatedShortcode
   } = attributes;
+
+  // Split the generated shortcode to isolate the tag name (e.g., "fungate")
+  const shortcodeTag = generatedShortcode.match(/^\[([^\s]+)/)[1];
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
-  }, generatedShortcode, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, null));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    dangerouslySetInnerHTML: {
+      __html: generatedShortcode
+    }
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.InnerBlocks.Content, null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    dangerouslySetInnerHTML: {
+      __html: `[/${shortcodeTag}]`
+    }
+  }));
 }
 
 /***/ }),

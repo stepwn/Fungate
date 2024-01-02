@@ -52,6 +52,7 @@ export default function Edit({ attributes, setAttributes }) {
     
         // Update the attribute
         setAttributes({ generatedShortcode: shortcode });
+        console.log("Updated Attribute: ", attributes.generatedShortcode);
     };
     
     // Update the shortcode whenever relevant attributes change
