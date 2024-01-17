@@ -23,7 +23,7 @@ function fungate_custom_user_profile_fields($user) {
     if (is_array($eth_nfts) && !empty($eth_nfts)) {
         foreach ($eth_nfts as $nft) {
             // Customize this line to format the NFTs however you like
-            $nfts_string .= '<div style="border: 2px solid black;">' . print_r($nft, true) . '</div>';
+            $nfts_string .= '<div style="border: 2px solid black;">' . esc_html(print_r($nft, true)) . '</div>';
         }
     } else {
         $nfts_string = '<p>No NFTs found.</p>';
@@ -34,7 +34,7 @@ function fungate_custom_user_profile_fields($user) {
     echo '<table class="form-table">';
     echo '<tr>';
     echo '<th><label for="address">Ethereum Address</label></th>';
-    echo '<td>' . $ethereum_address . '</td>';
+    echo '<td>' . esc_html(get_user_meta($user->ID, 'ethereum_address', true)) . '</td>';
     echo '</tr>';
     echo '<tr>';
     echo '<th><label for="eth_nfts">ETH NFTs</label></th>';

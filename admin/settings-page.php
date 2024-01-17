@@ -1,130 +1,8 @@
 <?php
 defined('ABSPATH') or die('No script kiddies please!');
 function fungate_settings_page() {
-    $plugin_root_path = plugin_dir_path( __DIR__ );
-    // Check if Chainhopper is installed
-    $chainhopper_installed = file_exists($plugin_root_path. 'core/chainhopper');
-    // Check if the 'Activate Chainhopper' button was pressed
-    if (isset($_POST['activate_chainhopper'])) {
-        if (get_option('fungate_license') !== 'FREE FOREVER' && get_option('fungate_license') !== '') {
-            require_once(ABSPATH . 'wp-admin/includes/file.php');
-            WP_Filesystem();
-            global $wp_filesystem;
-    
-            error_log('attempting to check for chainhopper');
-            $license_key = sanitize_text_field(get_option('fungate_license'));
-        
-            if (current_user_can('manage_options')) {
-                $response = wp_remote_post('https://fungate.io/wp-content/plugins/fungate/core/license/check.php', array(
-                    'body' => array('license_key' => $license_key),
-                    'sslverify' => true,
-                ));
-                
-                if (is_wp_error($response)) {
-                    error_log('HTTP Error: ' . $response->get_error_message());
-                } else {
-                    $data = json_decode(wp_remote_retrieve_body($response));
-                }
-                
-                if ($response === false) {
-                    error_log('cURL Error: ' . curl_error($curl));
-                } else {
-                    $data = json_decode($response);
-        
-                    if ($data && $data->status === 'chainhopper' && !empty($data->nonce)) {
-                        $target_folder = $plugin_root_path. 'core/chainhopper';
-    
-                        error_log($target_folder);
-                        // Check if Chainhopper is already installed
-                        if (!file_exists($target_folder)) {
-                            // Attempt to create the target directory if it doesn't exist
-                            if (!mkdir($target_folder, 0755, true) && !is_dir($target_folder)) {
-                                error_log('Error: Unable to create Chainhopper directory.');
-                            } else {
-                                error_log('downloading chainhopper');
-                                $download_link = 'https://fungate.io/wp-content/plugins/fungate/core/license/download_chainhopper.php?nonce=' . $data->nonce;
-        
-                                $downloaded_data = wp_remote_get($download_link, array(
-                                    'sslverify' => true,
-                                    'redirection' => true, // Automatically follow redirects
-                                ));
-                                
-                                if (is_wp_error($downloaded_data)) {
-                                    error_log('HTTP Error: ' . $downloaded_data->get_error_message());
-                                } else {
-                                    $downloaded_data = wp_remote_retrieve_body($downloaded_data);
-                                }
-                                
-    
-                                // Check for errors in the cURL session
-                                if ($downloaded_data === false) {
-                                    error_log('cURL Error: ' . curl_error($curl));
-                                } else {
-                                    // Specify the path where you want to save the downloaded file
-                                    $temp_file = tempnam(sys_get_temp_dir(), 'chainhopper_');
-    
-                                    // Save the downloaded data to the file
-                                    file_put_contents($temp_file, $downloaded_data);
-    
-                                    // Close the cURL session
-                                    curl_close($curl);
-                                    error_log('successfully downloaded. preparing to unzip...');
-                                    // Check for file writing errors
-                                    if ($downloaded_data === false) {
-                                        error_log('Error writing downloaded file.');
-                                    } else {
-                                        $result = unzip_file($temp_file, $target_folder);
-                                        if (is_wp_error($result)) {
-                                            error_log('Fungate Plugin Error: ' . $result->get_error_message());
-                                        } else {
-                                            // Successfully downloaded and unzipped
-    
-                                            if (is_wp_error($result)) {
-                                                error_log('Fungate Plugin Error: ' . $result->get_error_message());
-                                            } else {
-                                                $plugin_file = plugin_dir_path(__FILE__) . '../fungate.php';
-                                                $include_line = "include_once('core/chainhopper/chainhopper-admin.php');";
-    
-                                                // Read the current contents of the plugin file
-                                                $plugin_contents = file_get_contents($plugin_file);
-    
-                                                // Check if the line already exists
-                                                if (strpos($plugin_contents, $include_line) === false) {
-                                                    // Append the include line to the plugin file contents
-                                                    $plugin_contents .= "\n" . $include_line;
-    
-                                                    // Write the modified contents back to the plugin file
-                                                    file_put_contents($plugin_file, $plugin_contents);
-                                                    // After successful installation, redirect to the Chainhopper settings page
-                                                    //wp_redirect(admin_url('admin.php?page=fungate-chainhopper-settings'));
-                                                    @unlink($temp_file);
-                                                    exit;
-                                                }
-    
-                                            }
-    
-                                            // Clean up by deleting the temporary file
-                                            @unlink($temp_file);
-                                        }
-                                        
-                                    }
-                                }
-    
-                            }
-                        } else {
-                            error_log('Chainhopper is already installed');
-                        }
-                    } else {
-                        error_log("License key is invalid or not 'chainhopper'");
-                    }
-                }
-                curl_close($curl);
-            }
-        }
-    }
+
     fungate_admin_page_render();
-    
-    
 
     // Check if WalletConnect project ID and Loopring API key are not set
     $walletconnect_project_id = get_option('wc_projectId');
@@ -143,7 +21,7 @@ function fungate_settings_page() {
     // Check if permalinks are set to plain (empty means plain)
     if (empty($permalink_structure)) {
         // Display notice in the WordPress admin
-        echo '<div class="notice notice-error"><p><strong>Error:</strong> Your permalink structure is set to "plain." This may cause issues with the REST API. Please go to <a href="' . admin_url('options-permalink.php') . '">Settings > Permalinks</a> and change it to a different setting.</p></div>';
+        echo '<div class="notice notice-error"><p><strong>Error:</strong> Your permalink structure is set to "plain." This may cause issues with the REST API. Please go to <a href="' . esc_url(admin_url('options-permalink.php')) . '">Settings > Permalinks</a> and change it to a different setting.</p></div>';
     }
 
 
@@ -161,22 +39,6 @@ if ( !extension_loaded('gmp') && get_option('fungate_license') == 'FREE FOREVER'
     ?>
     <div class="fungate-wrap">
         <h1>Fungate Plugin Settings</h1>
-        <form method="post" action="">
-    <?php if (!$chainhopper_installed && get_option('fungate_license') !== 'FREE FOREVER' && get_option('fungate_license') !== ''): ?>
-        <p>
-            <button type="submit" name="activate_chainhopper" onclick="changeButtonText(this);" class="button button-primary">Activate Chainhopper</button>
-        </p>
-    <?php endif; ?>
-        </form>
-
-        <script>
-        function changeButtonText(button) {
-            button.textContent = 'Installing Chainhopper. This may take a minute or two. Please wait...';
-            setTimeout(function() {
-                button.disabled = true;
-            }, 100); // Delay disabling the button
-        }
-        </script>
 
         <form method="post" action="options.php">
             <?php settings_fields('fungate_settings'); ?>
@@ -226,16 +88,16 @@ if ( !extension_loaded('gmp') && get_option('fungate_license') == 'FREE FOREVER'
                     <td><input type="checkbox" id="fungate_add_accountButton_to_fail" name="fungate_add_accountButton_to_fail" value="1" <?php checked(1, get_option('fungate_add_accountButton_to_fail', 1), true); ?> /></td>
                     <td>Add the Account/wallet button to failed gate messages by default</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th scope="row"><label for="fungate_nft_enabled">Enable Fungate NFT Posts</label></th>
                     <td><input type="checkbox" id="fungate_nft_enabled" name="fungate_nft_enabled" value="1" <?php checked(1, get_option('fungate_nft_enabled', 1), true); ?> /></td>
                     <td>Enable or disable Fungate NFT custom post type.</td>
-                </tr>
-                <tr>
+                </tr> -->
+                <!-- <tr>
                     <th scope="row"><label for="fungate_tinymce_enabled">Enable TinyMCE editor button</label></th>
                     <td><input type="checkbox" id="fungate_tinymce_enabled" name="fungate_tinymce_enabled" value="1" <?php checked(1, get_option('fungate_tinymce_enabled', 1), true); ?> /></td>
                     <td>Enable or disable token gate button in the TinyMCE editor.</td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th scope="row"><label for="fungate_buddypress_enabled">Enable Fungate NFT Groups in BuddyPress</label></th>
                     <td><input type="checkbox" id="fungate_buddypress_enabled" name="fungate_buddypress_enabled" value="1" <?php checked(1, get_option('fungate_buddypress_enabled', 1), true); ?> /></td>

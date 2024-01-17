@@ -2,12 +2,12 @@
 
 namespace fungate_BI;
 
-if (!defined("S_MATH_BIGINTEGER_MODE")) {
+if (!defined("FUNGATE_S_MATH_BIGINTEGER_MODE")) {
     if (extension_loaded("gmp")) {
-        define("S_MATH_BIGINTEGER_MODE", "gmp");
+        define("FUNGATE_S_MATH_BIGINTEGER_MODE", "gmp");
     }
     else if (extension_loaded("bcmath")) {
-        define("S_MATH_BIGINTEGER_MODE", "bcmath");
+        define("FUNGATE_S_MATH_BIGINTEGER_MODE", "bcmath");
     }
     else {
         if (!defined("S_MATH_BIGINTEGER_QUIET")) {
@@ -16,7 +16,7 @@ if (!defined("S_MATH_BIGINTEGER_MODE")) {
     }
 }
 
-if (S_MATH_BIGINTEGER_MODE == "gmp") {
+if (FUNGATE_S_MATH_BIGINTEGER_MODE == "gmp") {
 
 if (!extension_loaded("gmp")) {
     throw new \Exception("Extension gmp not loaded");
@@ -226,7 +226,7 @@ class BigInteger {
 }
 
 }
-else if (S_MATH_BIGINTEGER_MODE == "bcmath") {
+else if (FUNGATE_S_MATH_BIGINTEGER_MODE == "bcmath") {
 
 if (!extension_loaded("bcmath")) {
     throw new \Exception("Extension bcmath not loaded");
@@ -626,6 +626,6 @@ class BigInteger{
 }
 else {
     if (!defined("S_MATH_BIGINTEGER_QUIET")) {
-        throw new \Exception("Unsupported S_MATH_BIGINTEGER_MODE " . S_MATH_BIGINTEGER_MODE);
+        throw new \Exception("Unsupported FUNGATE_S_MATH_BIGINTEGER_MODE " . FUNGATE_S_MATH_BIGINTEGER_MODE);
     }
 }

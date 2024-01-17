@@ -30,7 +30,3 @@ include_once( 'core/gating-functions.php' );
 include_once( 'core/integrations.php' ); // Add integrations to other plugins in the core/integrations.php file
 include_once( 'core/nft-roles.php' );
 include_once( 'fungate-blocks/fungate-blocks.php' );
-
-// testing
-//include_once( 'imx-passport/imx-passport.php' );
-//include_once( 'fungate-posts/fungate-post.php' );

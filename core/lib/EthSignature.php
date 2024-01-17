@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die('No script kiddies please!');
 /**
  * Autoloads classes when needed.
  *
@@ -18,9 +19,9 @@ use Elliptic\EC;
 use kornrunner\Keccak;
 
 /**
- * Class EthSignature handles Ethereum signature verification.
+ * Class FungateEthSignature handles Ethereum signature verification.
  */
-class EthSignature {
+class FungateEthSignature {
     /**
      * Converts a public key to an Ethereum address.
      *

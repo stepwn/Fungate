@@ -150,6 +150,4 @@ function fungate_membership_shortcode( $atts, $content = null ) {
     return fungate_has_membership( $selected_account, $attributes ) ? do_shortcode( $content ) : fungate_shortcode( $content, '<div class="fungate_fail_message">' . $fail_message . '</div>' );
 }
 add_shortcode('fungate', 'fungate_membership_shortcode');
-add_shortcode('looppress', 'fungate_membership_shortcode'); // Depreciated
-add_shortcode('looppress_required', 'fungate_membership_shortcode'); // Deprecated
 add_shortcode('fungate_inner', 'fungate_membership_shortcode');

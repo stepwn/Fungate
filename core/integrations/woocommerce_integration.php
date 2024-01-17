@@ -1,5 +1,5 @@
 <?php
-
+defined('ABSPATH') or die('No script kiddies please!');
 // Add a new tab in the coupon data panel.
 add_action('woocommerce_coupon_data_tabs', 'fungate_add_nft_coupon_data_tab', 10, 1);
 function fungate_add_nft_coupon_data_tab($tabs) {
@@ -17,6 +17,7 @@ function fungate_add_nft_coupon_data_panel() {
     ?>
     <div id="nft_coupon_data" class="panel woocommerce_options_panel">
         <?php
+        wp_nonce_field('fungate_save_coupon_data', 'fungate_coupon_nonce');
         // NFT Field
         woocommerce_wp_text_input(array(
             'id'          => 'nft',
@@ -60,21 +61,23 @@ function fungate_add_nft_coupon_data_panel() {
 // Save the custom fields data.
 add_action('woocommerce_coupon_options_save', 'fungate_save_nft_coupon_data');
 function fungate_save_nft_coupon_data($post_id) {
-    // NFT Field
-    $nft = isset($_POST['nft']) ? wc_clean($_POST['nft']) : '';
-    update_post_meta($post_id, 'nft', $nft);
+    if (isset($_POST['fungate_coupon_nonce']) && wp_verify_nonce($_POST['fungate_coupon_nonce'], 'fungate_save_coupon_data')) {
+        // NFT Field
+        $nft = isset($_POST['nft']) ? wc_clean($_POST['nft']) : '';
+        update_post_meta($post_id, 'nft', $nft);
 
-    // Minter Field
-    $minter = isset($_POST['minter']) ? wc_clean($_POST['minter']) : '';
-    update_post_meta($post_id, 'minter', $minter);
+        // Minter Field
+        $minter = isset($_POST['minter']) ? wc_clean($_POST['minter']) : '';
+        update_post_meta($post_id, 'minter', $minter);
 
-    // Contract Field
-    $contract = isset($_POST['contract']) ? wc_clean($_POST['contract']) : '';
-    update_post_meta($post_id, 'contract', $contract);
-    
-    // Schedule Field
-    $schedule = isset($_POST['schedule']) ? wc_clean($_POST['schedule']) : '';
-    update_post_meta($post_id, 'schedule', $schedule);
+        // Contract Field
+        $contract = isset($_POST['contract']) ? wc_clean($_POST['contract']) : '';
+        update_post_meta($post_id, 'contract', $contract);
+        
+        // Schedule Field
+        $schedule = isset($_POST['schedule']) ? wc_clean($_POST['schedule']) : '';
+        update_post_meta($post_id, 'schedule', $schedule);
+    }
 }
 
 add_filter('woocommerce_product_data_tabs', 'fungate_add_custom_product_data_tab');
@@ -93,7 +96,7 @@ function fungate_add_custom_fields_to_product_tab() {
     <div id='nft_product_data' class='panel woocommerce_options_panel'>
         <?php
         echo '<div class="options_group">';
-
+        wp_nonce_field('fungate_save_product_data', 'fungate_product_nonce');
         // NFT Field
         woocommerce_wp_text_input(
             array(
@@ -147,21 +150,23 @@ function fungate_add_custom_fields_to_product_tab() {
 
 add_action('woocommerce_process_product_meta', 'fungate_save_custom_product_fields');
 function fungate_save_custom_product_fields($post_id) {
-    // Save NFT Field
-    $nft = isset($_POST['_nft']) ? wc_clean($_POST['_nft']) : '';
-    update_post_meta($post_id, '_nft', $nft);
+    if (isset($_POST['fungate_product_nonce']) && wp_verify_nonce($_POST['fungate_product_nonce'], 'fungate_save_product_data')) {
+        // Save NFT Field
+        $nft = isset($_POST['_nft']) ? wc_clean($_POST['_nft']) : '';
+        update_post_meta($post_id, '_nft', $nft);
 
-    // Save Minter Field
-    $minter = isset($_POST['_minter']) ? wc_clean($_POST['_minter']) : '';
-    update_post_meta($post_id, '_minter', $minter);
+        // Save Minter Field
+        $minter = isset($_POST['_minter']) ? wc_clean($_POST['_minter']) : '';
+        update_post_meta($post_id, '_minter', $minter);
 
-    // Save Contract Field
-    $contract = isset($_POST['_contract']) ? wc_clean($_POST['_contract']) : '';
-    update_post_meta($post_id, '_contract', $contract);
+        // Save Contract Field
+        $contract = isset($_POST['_contract']) ? wc_clean($_POST['_contract']) : '';
+        update_post_meta($post_id, '_contract', $contract);
 
-    // Save Schedule Field
-    $schedule = isset($_POST['_schedule']) ? wc_clean($_POST['_schedule']) : '';
-    update_post_meta($post_id, '_schedule', $schedule);
+        // Save Schedule Field
+        $schedule = isset($_POST['_schedule']) ? wc_clean($_POST['_schedule']) : '';
+        update_post_meta($post_id, '_schedule', $schedule);
+    }
 }
 
 add_filter('woocommerce_add_to_cart_validation', 'fungate_validate_nft_before_add_to_cart', 10, 3);

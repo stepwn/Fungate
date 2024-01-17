@@ -1,21 +1,36 @@
 <?php
-
+defined('ABSPATH') or die('No script kiddies please!');
 // Add custom metadata to BuddyBoss groups upon creation or update.
 function fungate_add_custom_nft_metadata_to_group( $group_id, $member, $group ) {
-    // Check if the custom attributes are set in the POST request.
-    if ( isset( $_POST['contract'] ) ) {
-        groups_update_groupmeta( $group_id, 'contract', sanitize_text_field( $_POST['contract'] ) );
-    }
-    if ( isset( $_POST['minter'] ) ) {
-        groups_update_groupmeta( $group_id, 'minter', sanitize_text_field( $_POST['minter'] ) );
-    }
-    if ( isset( $_POST['nft'] ) ) {
-        groups_update_groupmeta( $group_id, 'nft', sanitize_text_field( $_POST['nft'] ) );
-    }
-    if ( isset( $_POST['schedule'] ) ) {
-        groups_update_groupmeta( $group_id, 'schedule', sanitize_text_field( $_POST['schedule'] ) );
+    // Check if nonce is set and verify it.
+    if ( isset( $_POST['fungate_nonce'] ) && wp_verify_nonce( $_POST['fungate_nonce'], 'fungate_custom_nft_metadata' ) ) {
+        
+        // Check user capability before proceeding
+        if ( current_user_can( 'manage_options' ) ) {
+            
+            // Update contract metadata if set
+            if ( isset( $_POST['contract'] ) ) {
+                groups_update_groupmeta( $group_id, 'contract', sanitize_text_field( $_POST['contract'] ) );
+            }
+
+            // Update minter metadata if set
+            if ( isset( $_POST['minter'] ) ) {
+                groups_update_groupmeta( $group_id, 'minter', sanitize_text_field( $_POST['minter'] ) );
+            }
+
+            // Update nft metadata if set
+            if ( isset( $_POST['nft'] ) ) {
+                groups_update_groupmeta( $group_id, 'nft', sanitize_text_field( $_POST['nft'] ) );
+            }
+
+            // Update schedule metadata if set
+            if ( isset( $_POST['schedule'] ) ) {
+                groups_update_groupmeta( $group_id, 'schedule', sanitize_text_field( $_POST['schedule'] ) );
+            }
+        }
     }
 }
+
 
 // Hook the function to the group creation and update actions.
 add_action( 'groups_update_group', 'fungate_add_custom_nft_metadata_to_group', 10, 3 );
@@ -32,22 +47,37 @@ function fungate_group_tab_content() {
 
     // Check if the form is submitted.
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
-        // Check if the custom attributes are set in the POST request.
-        if ( isset( $_POST['contract'] ) ) {
-            groups_update_groupmeta( $group_id, 'contract', sanitize_text_field( $_POST['contract'] ) );
+        // Verify nonce and check user capability before proceeding
+        if ( isset( $_POST['fungate_nonce'] ) && wp_verify_nonce( $_POST['fungate_nonce'], 'fungate_update_group_meta' ) && current_user_can( 'manage_options' ) ) {
+
+            // Update contract metadata if set
+            if ( isset( $_POST['contract'] ) ) {
+                groups_update_groupmeta( $group_id, 'contract', sanitize_text_field( $_POST['contract'] ) );
+            }
+
+            // Update minter metadata if set
+            if ( isset( $_POST['minter'] ) ) {
+                groups_update_groupmeta( $group_id, 'minter', sanitize_text_field( $_POST['minter'] ) );
+            }
+
+            // Update nft metadata if set
+            if ( isset( $_POST['nft'] ) ) {
+                groups_update_groupmeta( $group_id, 'nft', sanitize_text_field( $_POST['nft'] ) );
+            }
+
+            // Update schedule metadata if set
+            if ( isset( $_POST['schedule'] ) ) {
+                groups_update_groupmeta( $group_id, 'schedule', sanitize_text_field( $_POST['schedule'] ) );
+            }
+
+            // Add a success message.
+            bp_core_add_message( 'Settings saved successfully.', 'success' );
+        } else {
+            // Add an error message if nonce verification fails or user lacks permission
+            bp_core_add_message( 'Error: Unauthorized operation or insufficient permissions.', 'error' );
         }
-        if ( isset( $_POST['minter'] ) ) {
-            groups_update_groupmeta( $group_id, 'minter', sanitize_text_field( $_POST['minter'] ) );
-        }
-        if ( isset( $_POST['nft'] ) ) {
-            groups_update_groupmeta( $group_id, 'nft', sanitize_text_field( $_POST['nft'] ) );
-        }
-        if ( isset( $_POST['schedule'] ) ) {
-            groups_update_groupmeta( $group_id, 'schedule', sanitize_text_field( $_POST['schedule'] ) );
-        }
-        // Add a success message.
-        bp_core_add_message( 'Settings saved successfully.', 'success' );
     }
+
 
     // Fetch the saved values (if any) from the group metadata.
     $contract = $group_id ? groups_get_groupmeta( $group_id, 'contract', true ) : '';
@@ -138,6 +168,7 @@ function fungate_add_custom_activity_fields() {
     <div id="fungate-settings-wrapper">
         <h4 id="fungate-settings-header"><span id="lock">&#x1F512;</span> <u>Fungate Settings</u></h4>
         <div id="fungate-settings-content" style="display:none;">
+        <?php wp_nonce_field('fungate_custom_activity_action', 'fungate_custom_activity_nonce'); ?>
             <label for="contract">Contract</label>
             <input type="text" name="contract" id="contract" />
             <br>
@@ -177,14 +208,33 @@ function fungate_add_custom_activity_fields() {
 add_action( 'bp_activity_post_form_options', 'fungate_add_custom_activity_fields' );
 
 function fungate_save_custom_activity_fields() {
-    if ( isset( $_POST['contract'] ) && isset( $_POST['minter'] ) && isset( $_POST['nft'] ) ) {
-        // Sanitize and save the data as activity meta.
-        bp_activity_update_meta( bp_get_activity_id(), 'contract', sanitize_text_field( $_POST['contract'] ) );
-        bp_activity_update_meta( bp_get_activity_id(), 'minter', sanitize_text_field( $_POST['minter'] ) );
-        bp_activity_update_meta( bp_get_activity_id(), 'nft', sanitize_text_field( $_POST['nft'] ) );
-        bp_activity_update_meta( bp_get_activity_id(), 'schedule', sanitize_text_field( $_POST['schedule'] ) );
+    // Verify nonce and check user capability before proceeding
+    if ( isset( $_POST['fungate_custom_activity_nonce'] ) && wp_verify_nonce( $_POST['fungate_custom_activity_nonce'], 'fungate_custom_activity_action' ) ) {
+
+        // Check if the current user has permission to edit activities
+        if ( current_user_can( 'edit_posts' ) ) {
+            // Save data as activity meta if fields are set
+            if ( isset( $_POST['contract'] ) ) {
+                bp_activity_update_meta( bp_get_activity_id(), 'contract', sanitize_text_field( $_POST['contract'] ) );
+            }
+
+            if ( isset( $_POST['minter'] ) ) {
+                bp_activity_update_meta( bp_get_activity_id(), 'minter', sanitize_text_field( $_POST['minter'] ) );
+            }
+
+            if ( isset( $_POST['nft'] ) ) {
+                bp_activity_update_meta( bp_get_activity_id(), 'nft', sanitize_text_field( $_POST['nft'] ) );
+            }
+
+            if ( isset( $_POST['schedule'] ) ) {
+                bp_activity_update_meta( bp_get_activity_id(), 'schedule', sanitize_text_field( $_POST['schedule'] ) );
+            }
+
+           
+        }
     }
 }
+
 add_action( 'bp_activity_posted_update', 'fungate_save_custom_activity_fields', 10, 3 );
 
 function fungate_display_custom_activity_fields() {

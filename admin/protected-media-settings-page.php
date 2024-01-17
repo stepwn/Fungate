@@ -1,18 +1,18 @@
 <?php
 defined('ABSPATH') or die('No script kiddies please!');
-function fungate_enqueue_media_upload_scripts($hook) {
-    if ('settings_page_fungate-media' === $hook) {
-        wp_enqueue_script('fungate-media-upload', plugin_dir_url(__FILE__) . 'js/fungate-media.js', array('jquery'), '1.0.0', true);
+function fungate_enqueue_media_upload_scripts() {
 
-        // Localize the script with new data
-        $script_data = array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wp_rest'),
-            'upload_url' => rest_url('fungate/v1/upload-media'),
-            'delete_url' => rest_url('fungate/v1/delete-media')
-        );
-        wp_localize_script('fungate-media-upload', 'fungateData', $script_data);
-    }
+    wp_enqueue_script('fungate-media-upload', plugin_dir_url(__FILE__) . 'js/fungate-media.js', array('jquery'), '1.0.0', true);
+
+    // Localize the script with new data
+    $script_data = array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('wp_rest'),
+        'upload_url' => rest_url('fungate/v1/upload-media'),
+        'delete_url' => rest_url('fungate/v1/delete-media')
+    );
+    wp_localize_script('fungate-media-upload', 'fungateData', $script_data);
+
 }
 
 add_action('admin_enqueue_scripts', 'fungate_enqueue_media_upload_scripts');
@@ -34,7 +34,7 @@ function fungate_media_page() {
     echo '<p>Welcome to the Fungate Media dashboard. Here, you can easily upload and manage your media files.</p>';
     
     echo '<h2>Upload Media</h2>';
-    echo '<form id="fungate-media-upload-form" enctype="multipart/form-data">';
+    echo '<form id="fungate-media-upload-form" method="post" enctype="multipart/form-data">';
     echo '<input type="file" name="file">';
     echo '<input type="submit" value="Upload" class="button button-primary">';
     echo '</form>';
@@ -61,9 +61,11 @@ function fungate_media_page() {
             if ($file != '.' && $file != '..' && $file != '.htaccess') {
                 // Construct the full URL to the file
                 $file_url = $base_url . '/' . $relative_folder_path . urlencode($file);
-                echo '<li>' . $file . ' - <button class="copy-link-button" data-url="' . $file_url . '">Copy Link</button> - <button class="delete-button" data-file="' . urlencode($file) . '">Delete</button></li>';
+                
+                // Escape the file name for HTML display and the file URL for attribute value
+                echo '<li>' . esc_html($file) . ' - <button class="copy-link-button" data-url="' . esc_url($file_url) . '">Copy Link</button> - <button class="delete-button" data-file="' . esc_attr(urlencode($file)) . '">Delete</button></li>';
             }
-        }
+        }        
 
         
         echo '</ul>';

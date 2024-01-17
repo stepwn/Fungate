@@ -4,7 +4,7 @@ defined('ABSPATH') or die('No script kiddies please!');
  * Handles user login and integration with blockchain networks.
  */
 
-require_once(__DIR__ . '/lib/EthSignature.php');
+require_once(__DIR__ . '/lib/FungateEthSignature.php');
 
 add_action('rest_api_init', function () {
     register_rest_route('fungate/v1', '/login', array(
@@ -70,8 +70,8 @@ function fungate_handle_signed_message($address, $signedMessage, $nonceFromClien
     $signatureValid = false;
 
     if(extension_loaded('gmp')) {
-        // Use EthSignature to verify the signature
-        $ethSignature = new EthSignature();
+        // Use FungateEthSignature to verify the signature
+        $ethSignature = new FungateEthSignature();
         if ($ethSignature->verify($nonceFromClient, $signedMessage, $address)) {
             $signatureValid = true;
         }
